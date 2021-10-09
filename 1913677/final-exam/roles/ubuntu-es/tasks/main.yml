@@ -1,0 +1,25 @@
+---
+# tasks file for roles/ubuntu-es
+- name: install vsftpd ubuntu
+  apt:
+    name: vsftpd
+    state: latest
+    update_cache: yes
+
+- name: disable firewall
+  service:
+    name: ufw
+    state: stopped
+    enabled: no
+
+- name: copy vsftpd.config
+  copy:
+    src: vsftpd.conf
+    dest: /etc/vsftpd.conf
+  register: vsftpd_config
+
+- name: restart vsftpd.config
+  service:
+    name: vsftpd
+    state: restarted
+  when: vsftpd_config.changed
